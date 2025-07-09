@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { CheckoutForm } from "./CheckoutForm";
 import { Sparkles, Leaf, Heart, Instagram } from "lucide-react";
 import perfumeImage from "@/assets/perfume-bottle.jpg";
+import logo from "@/assets/ceu-de-lavanda-logo.png";
 
 export const ProductSection = () => {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -21,7 +22,7 @@ export const ProductSection = () => {
       {/* Header */}
       <header className="text-center py-8 px-4">
         <img
-          src="/ceu-de-lavanda-logo.png"
+          src={logo}
           alt="Céu de Lavanda"
           className="mx-auto mb-6 h-24 w-auto object-contain"
         />
