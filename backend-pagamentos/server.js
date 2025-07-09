@@ -183,4 +183,5 @@ app.listen(PORT, () => {
   console.log(
     `📋 Pedidos pendentes: http://localhost:${PORT}/api/pending-orders`
   );
+  console.log(`🎨 Marca: Sete Saias - Perfumes Artesanais`);
 });
