@@ -18,24 +18,19 @@ export const ProductSection = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background font-serif">
-      {/* Header */}
-      <header className="text-center py-8 px-4">
-        <img
-          src={logo}
-          alt="Céu de Lavanda"
-          className="mx-auto mb-6 h-24 w-auto object-contain"
-        />
-        <a
-          href="https://instagram.com/ceu_de_lavanda"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-primary hover:text-lavender-hover transition-colors"
-        >
-          <Instagram className="h-5 w-5" />
-          @ceu_de_lavanda
-        </a>
-      </header>
+      <div className="min-h-screen bg-background font-serif">
+        {/* Header */}
+        <header className="w-full px-4 py-2 flex flex-col items-center gap-4">
+          {/* Logo centralizada no topo */}
+          <div className="w-full flex justify-center">
+            <img
+              src={logo}
+              alt="Céu de Lavanda"
+              className="h-40 md:h-48 lg:h-56 w-auto object-contain"
+              style={{ minHeight: "10rem", maxHeight: "14rem" }}
+            />
+          </div>
+        </header>
 
       {/* Main Product Section */}
       <main className="max-w-6xl mx-auto px-4 py-12">
@@ -85,6 +80,7 @@ export const ProductSection = () => {
                 <span className="text-4xl font-bold text-deep-purple">
                   R$ 89,90
                 </span>
+                {/*
                 <span className="text-muted-foreground line-through">
                   R$ 120,00
                 </span>
@@ -94,6 +90,7 @@ export const ProductSection = () => {
                 >
                   25% OFF
                 </Badge>
+                */}
               </div>
 
               <Dialog open={isCheckoutOpen} onOpenChange={setIsCheckoutOpen}>
@@ -111,7 +108,7 @@ export const ProductSection = () => {
               </Dialog>
 
               <p className="text-center text-sm text-muted-foreground mt-4">
-                Compra segura • Frete grátis para todo Brasil
+                Compra segura • Frete já incluso para todo Brasil
               </p>
             </div>
           </div>
@@ -162,15 +159,20 @@ export const ProductSection = () => {
             Fragrâncias artesanais com identidade visual natural e tons lavanda
             suaves. Cada perfume é criado com ingredientes selecionados e muito
             cuidado.
+            <br />
+            <a
+              href="#outras-fragrancias"
+              className="text-primary hover:text-lavender-hover font-medium text-lg transition-colors ml-1"
+            >
+              Outras Fragrâncias
+            </a>
           </p>
         </div>
       </main>
 
       {/* Footer */}
       <footer className="text-center py-12 border-t border-border mt-20">
-        <p className="text-muted-foreground mb-4">
-          © 2024 Céu de Lavanda - Fragrâncias Artesanais
-        </p>
+        <p className="text-muted-foreground mb-4">© 2025 Céu de Lavanda</p>
         <a
           href="https://instagram.com/ceu_de_lavanda"
           target="_blank"
