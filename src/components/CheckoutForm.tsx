@@ -40,7 +40,7 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
           },
         },
         product: {
-          title: "Perfume Sete Saias - Céu de Lavanda",
+          title: "Perfume Sete Saias - Artesanal",
           unit_price: 89.9,
           quantity: 1,
         },
@@ -94,19 +94,24 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-card border-border font-serif">
+    <Card className="w-full max-w-md mx-auto bg-sete-dark border-sete-gold/30 font-body text-sete-cream">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl text-deep-purple">
+        <CardTitle className="text-2xl text-sete-gold font-title">
           Finalizar Compra
         </CardTitle>
-        <p className="text-muted-foreground">Perfume Sete Saias - R$ 89,90</p>
+        <p className="text-sete-cream/80 font-body">
+          Perfume Sete Saias - R$ 89,90
+        </p>
       </CardHeader>
 
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             <div>
-              <Label htmlFor="nome" className="text-deep-purple font-medium">
+              <Label
+                htmlFor="nome"
+                className="text-sete-cream font-medium font-body"
+              >
                 Nome Completo *
               </Label>
               <Input
@@ -118,12 +123,15 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
                 }
                 required
                 disabled={isLoading}
-                className="mt-1 border-muted-foreground/30 focus:border-primary"
+                className="mt-1 border-sete-gold/30 focus:border-sete-gold bg-sete-dark/50 text-sete-cream"
               />
             </div>
 
             <div>
-              <Label htmlFor="email" className="text-deep-purple font-medium">
+              <Label
+                htmlFor="email"
+                className="text-sete-cream font-medium font-body"
+              >
                 E-mail *
               </Label>
               <Input
@@ -133,14 +141,14 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 required
                 disabled={isLoading}
-                className="mt-1 border-muted-foreground/30 focus:border-primary"
+                className="mt-1 border-sete-gold/30 focus:border-sete-gold bg-sete-dark/50 text-sete-cream"
               />
             </div>
 
             <div>
               <Label
                 htmlFor="endereco"
-                className="text-deep-purple font-medium"
+                className="text-sete-cream font-medium font-body"
               >
                 Endereço Completo *
               </Label>
@@ -151,7 +159,7 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
                 onChange={(e) => handleInputChange("endereco", e.target.value)}
                 required
                 disabled={isLoading}
-                className="mt-1 border-muted-foreground/30 focus:border-primary"
+                className="mt-1 border-sete-gold/30 focus:border-sete-gold bg-sete-dark/50 text-sete-cream"
               />
             </div>
 
@@ -159,7 +167,7 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
               <div>
                 <Label
                   htmlFor="cidade"
-                  className="text-deep-purple font-medium"
+                  className="text-sete-cream font-medium font-body"
                 >
                   Cidade *
                 </Label>
@@ -170,11 +178,14 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
                   onChange={(e) => handleInputChange("cidade", e.target.value)}
                   required
                   disabled={isLoading}
-                  className="mt-1 border-muted-foreground/30 focus:border-primary"
+                  className="mt-1 border-sete-gold/30 focus:border-sete-gold bg-sete-dark/50 text-sete-cream"
                 />
               </div>
               <div>
-                <Label htmlFor="cep" className="text-deep-purple font-medium">
+                <Label
+                  htmlFor="cep"
+                  className="text-sete-cream font-medium font-body"
+                >
                   CEP *
                 </Label>
                 <Input
@@ -184,14 +195,14 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
                   onChange={(e) => handleInputChange("cep", e.target.value)}
                   required
                   disabled={isLoading}
-                  className="mt-1 border-muted-foreground/30 focus:border-primary"
+                  className="mt-1 border-sete-gold/30 focus:border-sete-gold bg-sete-dark/50 text-sete-cream"
                 />
               </div>
             </div>
           </div>
 
           <div>
-            <Label className="text-deep-purple font-medium mb-3 block">
+            <Label className="text-sete-cream font-medium mb-3 block font-body">
               Forma de Pagamento *
             </Label>
             <RadioGroup
@@ -202,18 +213,24 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
               disabled={isLoading}
               className="space-y-3"
             >
-              <div className="flex items-center space-x-3 p-3 border border-muted rounded-lg hover:bg-accent/50 transition-colors">
+              <div className="flex items-center space-x-3 p-3 border border-sete-gold/30 rounded-lg hover:bg-sete-dark/70 transition-colors">
                 <RadioGroupItem value="pix" id="pix" />
-                <QrCode className="h-5 w-5 text-primary" />
-                <Label htmlFor="pix" className="flex-1 cursor-pointer">
-                  PIX (Desconto de 5%)
+                <QrCode className="h-5 w-5 text-sete-gold" />
+                <Label
+                  htmlFor="pix"
+                  className="flex-1 cursor-pointer text-sete-cream font-body"
+                >
+                  PIX
                 </Label>
               </div>
-              <div className="flex items-center space-x-3 p-3 border border-muted rounded-lg hover:bg-accent/50 transition-colors">
+              <div className="flex items-center space-x-3 p-3 border border-sete-gold/30 rounded-lg hover:bg-sete-dark/70 transition-colors">
                 <RadioGroupItem value="cartao" id="cartao" />
-                <CreditCard className="h-5 w-5 text-primary" />
-                <Label htmlFor="cartao" className="flex-1 cursor-pointer">
-                  Cartão de Crédito
+                <CreditCard className="h-5 w-5 text-sete-gold" />
+                <Label
+                  htmlFor="cartao"
+                  className="flex-1 cursor-pointer text-sete-cream font-body"
+                >
+                  Cartão de Crédito, Débito ou Boleto
                 </Label>
               </div>
             </RadioGroup>
@@ -225,14 +242,14 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
               variant="outline"
               onClick={onClose}
               disabled={isLoading}
-              className="flex-1 border-primary text-primary hover:bg-primary/10"
+              className="flex-1 border-sete-gold/50 text-sete-gold hover:bg-sete-gold/10 font-body"
             >
               Cancelar
             </Button>
             <Button
               type="submit"
               disabled={isLoading}
-              className="flex-1 bg-primary hover:bg-lavender-hover text-primary-foreground font-medium"
+              className="flex-1 bg-sete-red hover:bg-sete-red-hover text-sete-cream font-medium font-body"
             >
               {isLoading ? (
                 <>
