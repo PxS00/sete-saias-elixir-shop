@@ -23,7 +23,7 @@ app.use(express.json());
 
 // Função para salvar pedido confirmado (implementar conforme sua necessidade)
 function saveConfirmedOrder(orderData) {
-  console.log("💾 SALVANDO PEDIDO CONFIRMADO:");
+  console.log("SALVANDO PEDIDO CONFIRMADO:");
   console.log("Cliente:", orderData.customer);
   console.log("Produto:", orderData.product);
   console.log("Forma de pagamento:", orderData.payment_method);
@@ -54,7 +54,7 @@ app.post("/api/create-payment", async (req, res) => {
       created_at: new Date().toISOString(),
     });
 
-    console.log(`📝 Pedido temporário salvo: ${orderId}`);
+    console.log(`Pedido temporário salvo: ${orderId}`);
 
     // Configuração da preferência de pagamento
     const preference = new Preference(client);
@@ -93,7 +93,6 @@ app.post("/api/create-payment", async (req, res) => {
         failure: "https://www.mercadopago.com.br/checkout/v1/redirect",
         pending: "https://www.mercadopago.com.br/checkout/v1/redirect",
       },
-      // auto_return: 'approved', // Removido para evitar erro
       external_reference: orderId,
     };
 
@@ -121,10 +120,10 @@ app.post("/api/create-payment", async (req, res) => {
 app.post("/api/webhook", (req, res) => {
   const { type, data } = req.body;
 
-  console.log("🔔 Webhook recebido:", { type, data });
+  console.log("Webhook recebido:", { type, data });
 
   if (type === "payment") {
-    console.log("💰 Pagamento confirmado:", data.id);
+    console.log("Pagamento confirmado:", data.id);
 
     // Aqui você buscaria os detalhes do pagamento para pegar o external_reference
     // Por simplicidade, vou simular que temos o external_reference
@@ -134,7 +133,7 @@ app.post("/api/webhook", (req, res) => {
     const orderData = pendingOrders.get(orderId);
 
     if (orderData) {
-      console.log("✅ Processando pedido confirmado:", orderId);
+      console.log("Processando pedido confirmado:", orderId);
 
       // Salvar pedido confirmado
       saveConfirmedOrder(orderData);
@@ -142,9 +141,9 @@ app.post("/api/webhook", (req, res) => {
       // Remover dos pedidos temporários
       pendingOrders.delete(orderId);
 
-      console.log("🎉 Pedido processado com sucesso!");
+      console.log("Pedido processado com sucesso!");
     } else {
-      console.log("⚠️ Pedido não encontrado:", orderId);
+      console.log("Pedido não encontrado:", orderId);
     }
   }
 
@@ -175,13 +174,8 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando na porta ${PORT}`);
-  console.log(
-    `📝 API disponível em: http://localhost:${PORT}/api/create-payment`
-  );
-  console.log(`🔗 Teste em: http://localhost:${PORT}`);
-  console.log(
-    `📋 Pedidos pendentes: http://localhost:${PORT}/api/pending-orders`
-  );
-  console.log(`🎨 Marca: Sete Saias - Perfumes Artesanais`);
+  console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`API disponível em: http://localhost:${PORT}/api/create-payment`);
+  console.log(`Teste em: http://localhost:${PORT}`);
+  console.log(`Pedidos pendentes: http://localhost:${PORT}/api/pending-orders`);
 });

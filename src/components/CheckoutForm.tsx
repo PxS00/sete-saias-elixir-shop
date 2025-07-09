@@ -9,9 +9,17 @@ import { CreditCard, QrCode, Loader2 } from "lucide-react";
 
 interface CheckoutFormProps {
   onClose: () => void;
+  selectedVariation?: {
+    id: string;
+    name: string;
+    description: string;
+  };
 }
 
-export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
+export const CheckoutForm = ({
+  onClose,
+  selectedVariation,
+}: CheckoutFormProps) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -28,7 +36,6 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
     setIsLoading(true);
 
     try {
-      // Dados do produto
       const orderData = {
         customer: {
           name: formData.nomeCompleto,
@@ -40,14 +47,16 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
           },
         },
         product: {
-          title: "Perfume Sete Saias - Artesanal",
-          unit_price: 89.9,
+          title: `Perfume Sete Saias - ${
+            selectedVariation?.name || "Artesanal"
+          }`,
+          variation: selectedVariation?.name || "Feminino",
+          unit_price: 237.0,
           quantity: 1,
         },
         payment_method: formData.opcaoPagamento,
       };
 
-      // Enviar para sua API
       const response = await fetch("http://localhost:3001/api/create-payment", {
         method: "POST",
         headers: {
@@ -64,13 +73,11 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
 
       if (result.success && result.payment_url) {
         toast({
-          title: "Redirecionando para pagamento...",
-          description:
-            "Você será direcionado para finalizar a compra com segurança.",
+          title: "Redirecionando para pagamento",
+          description: "Aguarde o redirecionamento para finalizar a compra.",
           duration: 3000,
         });
 
-        // Redirecionar para o link de pagamento
         window.location.href = result.payment_url;
       } else {
         throw new Error(result.error || "Erro no processamento");
@@ -99,9 +106,22 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
         <CardTitle className="text-2xl text-sete-gold font-title">
           Finalizar Compra
         </CardTitle>
-        <p className="text-sete-cream/80 font-body">
-          Perfume Sete Saias - R$ 89,90
-        </p>
+        <div className="space-y-2">
+          <p className="text-sete-cream/80 font-body">
+            Perfume Sete Saias - {selectedVariation?.name || "Artesanal"}
+          </p>
+          <p className="text-sm text-sete-gold font-body">R$ 237,00</p>
+          {selectedVariation && (
+            <div className="bg-sete-dark/50 border border-sete-gold/30 rounded-lg p-3 mt-3">
+              <p className="text-xs text-sete-cream/70 mb-1">
+                Variação selecionada:
+              </p>
+              <p className="text-sm font-medium text-sete-cream">
+                {selectedVariation.description}
+              </p>
+            </div>
+          )}
+        </div>
       </CardHeader>
 
       <CardContent>
