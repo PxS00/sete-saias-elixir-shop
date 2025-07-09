@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
-import { CreditCard, QrCode } from "lucide-react";
+import { CreditCard, QrCode, Loader2 } from "lucide-react";
 
 interface CheckoutFormProps {
   onClose: () => void;
@@ -13,6 +13,7 @@ interface CheckoutFormProps {
 
 export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     nomeCompleto: "",
     email: "",
@@ -22,26 +23,70 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
     opcaoPagamento: "pix",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
-    toast({
-      title: "Pedido Confirmado!",
-      description:
-        "Obrigado pela compra! Seu pedido foi recebido e será preparado com cuidado. Em breve você receberá um e-mail com as informações de envio.",
-      duration: 6000,
-    });
+    try {
+      // Dados do produto
+      const orderData = {
+        customer: {
+          name: formData.nomeCompleto,
+          email: formData.email,
+          address: {
+            street: formData.endereco,
+            city: formData.cidade,
+            zip_code: formData.cep,
+          },
+        },
+        product: {
+          title: "Perfume Sete Saias - Céu de Lavanda",
+          unit_price: 89.9,
+          quantity: 1,
+        },
+        payment_method: formData.opcaoPagamento,
+      };
 
-    setFormData({
-      nomeCompleto: "",
-      email: "",
-      endereco: "",
-      cidade: "",
-      cep: "",
-      opcaoPagamento: "pix",
-    });
+      // Enviar para sua API
+      const response = await fetch("http://localhost:3001/api/create-payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      });
 
-    onClose();
+      if (!response.ok) {
+        throw new Error("Erro ao processar pagamento");
+      }
+
+      const result = await response.json();
+
+      if (result.success && result.payment_url) {
+        toast({
+          title: "Redirecionando para pagamento...",
+          description:
+            "Você será direcionado para finalizar a compra com segurança.",
+          duration: 3000,
+        });
+
+        // Redirecionar para o link de pagamento
+        window.location.href = result.payment_url;
+      } else {
+        throw new Error(result.error || "Erro no processamento");
+      }
+    } catch (error) {
+      console.error("Erro:", error);
+      toast({
+        title: "Erro no pagamento",
+        description:
+          "Ocorreu um erro ao processar seu pedido. Tente novamente.",
+        duration: 5000,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -72,6 +117,7 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
                   handleInputChange("nomeCompleto", e.target.value)
                 }
                 required
+                disabled={isLoading}
                 className="mt-1 border-muted-foreground/30 focus:border-primary"
               />
             </div>
@@ -86,6 +132,7 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
                 value={formData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 required
+                disabled={isLoading}
                 className="mt-1 border-muted-foreground/30 focus:border-primary"
               />
             </div>
@@ -103,6 +150,7 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
                 value={formData.endereco}
                 onChange={(e) => handleInputChange("endereco", e.target.value)}
                 required
+                disabled={isLoading}
                 className="mt-1 border-muted-foreground/30 focus:border-primary"
               />
             </div>
@@ -121,6 +169,7 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
                   value={formData.cidade}
                   onChange={(e) => handleInputChange("cidade", e.target.value)}
                   required
+                  disabled={isLoading}
                   className="mt-1 border-muted-foreground/30 focus:border-primary"
                 />
               </div>
@@ -134,6 +183,7 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
                   value={formData.cep}
                   onChange={(e) => handleInputChange("cep", e.target.value)}
                   required
+                  disabled={isLoading}
                   className="mt-1 border-muted-foreground/30 focus:border-primary"
                 />
               </div>
@@ -149,6 +199,7 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
               onValueChange={(value) =>
                 handleInputChange("opcaoPagamento", value)
               }
+              disabled={isLoading}
               className="space-y-3"
             >
               <div className="flex items-center space-x-3 p-3 border border-muted rounded-lg hover:bg-accent/50 transition-colors">
@@ -173,15 +224,24 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
               type="button"
               variant="outline"
               onClick={onClose}
+              disabled={isLoading}
               className="flex-1 border-primary text-primary hover:bg-primary/10"
             >
               Cancelar
             </Button>
             <Button
               type="submit"
+              disabled={isLoading}
               className="flex-1 bg-primary hover:bg-lavender-hover text-primary-foreground font-medium"
             >
-              Confirmar Pedido
+              {isLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Processando...
+                </>
+              ) : (
+                "Finalizar Compra"
+              )}
             </Button>
           </div>
         </form>

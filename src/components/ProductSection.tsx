@@ -157,7 +157,10 @@ export const ProductSection = () => {
           <h2 className="text-3xl font-bold text-deep-purple mb-6">
             Céu de Lavanda
           </h2>
-          <p id="outras-fragrancias" className="text-lg text-muted-foreground leading-relaxed">
+          <p
+            id="outras-fragrancias"
+            className="text-lg text-muted-foreground leading-relaxed"
+          >
             Fragrâncias artesanais com identidade visual natural e tons lavanda
             suaves. Cada perfume é criado com ingredientes selecionados e muito
             cuidado.
