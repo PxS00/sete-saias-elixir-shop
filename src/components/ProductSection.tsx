@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { CheckoutForm } from "./CheckoutForm";
 import { Sparkles, Leaf, Heart, Instagram } from "lucide-react";
-import perfumeImage from "@/assets/perfume-bottle.jpg";
+import perfumeImage from "@/assets/sete-saias.jpg";
 import logo from "@/assets/ceu-de-lavanda-logo.png";
 
 export const ProductSection = () => {
