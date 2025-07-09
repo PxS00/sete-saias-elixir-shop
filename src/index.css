@@ -8,35 +8,45 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Céu de Lavanda color palette */
+    --background: 37 67% 97%; /* #fefaf7 */
+    --foreground: 290 33% 18%; /* #2e1e35 */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 37 67% 97%;
+    --card-foreground: 290 33% 18%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 37 67% 97%;
+    --popover-foreground: 290 33% 18%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 276 96% 56%; /* #8b2bfa */
+    --primary-foreground: 37 67% 97%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 290 20% 85%;
+    --secondary-foreground: 290 33% 18%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 290 15% 90%;
+    --muted-foreground: 290 15% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 276 70% 85%;
+    --accent-foreground: 290 33% 18%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 37 67% 97%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 290 20% 85%;
+    --input: 290 20% 85%;
+    --ring: 276 96% 56%;
 
-    --radius: 0.5rem;
+    /* Custom brand colors */
+    --lavender-primary: 276 96% 56%; /* #8b2bfa */
+    --lavender-hover: 276 96% 46%; /* #6e1dc9 */
+    --cream-bg: 37 67% 97%; /* #fefaf7 */
+    --deep-purple: 290 33% 18%; /* #2e1e35 */
+
+    /* Typography */
+    --font-serif: Georgia, serif;
+
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 

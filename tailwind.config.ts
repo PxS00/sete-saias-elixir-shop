@@ -18,6 +18,10 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				serif: ['Georgia', 'serif'],
+				elegant: ['Georgia', 'serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -52,6 +56,12 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				'lavender': {
+					primary: 'hsl(var(--lavender-primary))',
+					hover: 'hsl(var(--lavender-hover))'
+				},
+				'cream': 'hsl(var(--cream-bg))',
+				'deep-purple': 'hsl(var(--deep-purple))',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
