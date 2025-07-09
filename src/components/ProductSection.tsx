@@ -18,19 +18,19 @@ export const ProductSection = () => {
   ];
 
   return (
-      <div className="min-h-screen bg-background font-serif">
-        {/* Header */}
-        <header className="w-full px-4 py-2 flex flex-col items-center gap-4">
-          {/* Logo centralizada no topo */}
-          <div className="w-full flex justify-center">
-            <img
-              src={logo}
-              alt="Céu de Lavanda"
-              className="h-40 md:h-48 lg:h-56 w-auto object-contain"
-              style={{ minHeight: "10rem", maxHeight: "14rem" }}
-            />
-          </div>
-        </header>
+    <div className="min-h-screen bg-background font-serif">
+      {/* Header */}
+      <header className="w-full px-4 py-2 flex flex-col items-center gap-2">
+        {/* Logo centralizada no topo */}
+        <div className="w-full flex justify-center mb-2">
+          <img
+            src={logo}
+            alt="Céu de Lavanda"
+            className="h-40 md:h-48 lg:h-56 w-auto object-contain"
+            style={{ minHeight: "10rem", maxHeight: "14rem" }}
+          />
+        </div>
+      </header>
 
       {/* Main Product Section */}
       <main className="max-w-6xl mx-auto px-4 py-12">
@@ -52,7 +52,7 @@ export const ProductSection = () => {
           {/* Product Info */}
           <div className="space-y-8">
             <div>
-              <h1 className="text-4xl lg:text-5xl font-bold text-deep-purple mb-4 leading-tight">
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-deep-purple mb-4 leading-tight break-words text-center">
                 Perfume Sete Saias
               </h1>
               <p className="text-xl text-muted-foreground mb-6">
@@ -161,7 +161,7 @@ export const ProductSection = () => {
             cuidado.
             <br />
             <a
-              href="#outras-fragrancias"
+              href="https://drive.google.com/file/d/1VgfdFJYAG670jUA54uk9FvpzB4LLm3Kd/view?usp=sharing"
               className="text-primary hover:text-lavender-hover font-medium text-lg transition-colors ml-1"
             >
               Outras Fragrâncias
