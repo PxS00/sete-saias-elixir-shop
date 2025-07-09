@@ -19,43 +19,44 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
     endereco: "",
     cidade: "",
     cep: "",
-    opcaoPagamento: "pix"
+    opcaoPagamento: "pix",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Simulate payment processing
+
     toast({
-      title: "Pedido Confirmado! 🌸",
-      description: "Obrigado por adquirir o elixir da Deusa! Seu pedido foi recebido e será preparado com todo carinho. Em breve você receberá um e-mail com o rastreio.",
+      title: "Pedido Confirmado!",
+      description:
+        "Obrigado pela compra! Seu pedido foi recebido e será preparado com cuidado. Em breve você receberá um e-mail com as informações de envio.",
       duration: 6000,
     });
-    
-    // Reset form
+
     setFormData({
       nomeCompleto: "",
       email: "",
       endereco: "",
       cidade: "",
       cep: "",
-      opcaoPagamento: "pix"
+      opcaoPagamento: "pix",
     });
-    
+
     onClose();
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
     <Card className="w-full max-w-md mx-auto bg-card border-border font-serif">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl text-deep-purple">Finalizar Compra</CardTitle>
+        <CardTitle className="text-2xl text-deep-purple">
+          Finalizar Compra
+        </CardTitle>
         <p className="text-muted-foreground">Perfume Sete Saias - R$ 89,90</p>
       </CardHeader>
-      
+
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
@@ -67,7 +68,9 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
                 id="nome"
                 type="text"
                 value={formData.nomeCompleto}
-                onChange={(e) => handleInputChange("nomeCompleto", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("nomeCompleto", e.target.value)
+                }
                 required
                 className="mt-1 border-muted-foreground/30 focus:border-primary"
               />
@@ -88,7 +91,10 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
             </div>
 
             <div>
-              <Label htmlFor="endereco" className="text-deep-purple font-medium">
+              <Label
+                htmlFor="endereco"
+                className="text-deep-purple font-medium"
+              >
                 Endereço Completo *
               </Label>
               <Input
@@ -103,7 +109,10 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label htmlFor="cidade" className="text-deep-purple font-medium">
+                <Label
+                  htmlFor="cidade"
+                  className="text-deep-purple font-medium"
+                >
                   Cidade *
                 </Label>
                 <Input
@@ -137,7 +146,9 @@ export const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
             </Label>
             <RadioGroup
               value={formData.opcaoPagamento}
-              onValueChange={(value) => handleInputChange("opcaoPagamento", value)}
+              onValueChange={(value) =>
+                handleInputChange("opcaoPagamento", value)
+              }
               className="space-y-3"
             >
               <div className="flex items-center space-x-3 p-3 border border-muted rounded-lg hover:bg-accent/50 transition-colors">
