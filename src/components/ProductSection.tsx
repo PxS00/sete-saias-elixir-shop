@@ -20,15 +20,17 @@ export const ProductSection = () => {
   return (
     <div className="min-h-screen bg-background font-serif">
       {/* Header */}
-      <header className="w-full px-4 py-2 flex flex-col items-center gap-2">
-        {/* Logo centralizada no topo */}
-        <div className="w-full flex justify-center mb-2">
-          <img
-            src={logo}
-            alt="Céu de Lavanda"
-            className="h-40 md:h-48 lg:h-56 w-auto object-contain"
-            style={{ minHeight: "10rem", maxHeight: "14rem" }}
-          />
+      <header className="w-full px-4 py-2 flex flex-col items-center gap-1">
+        {/* Logo centralizada no topo, agora é um link */}
+        <div className="w-full flex justify-center mb-0">
+          <a href="#outras-fragrancias">
+            <img
+              src={logo}
+              alt="Céu de Lavanda"
+              className="h-40 md:h-48 lg:h-56 w-auto object-contain"
+              style={{ minHeight: "10rem", maxHeight: "14rem" }}
+            />
+          </a>
         </div>
       </header>
 
@@ -155,7 +157,7 @@ export const ProductSection = () => {
           <h2 className="text-3xl font-bold text-deep-purple mb-6">
             Céu de Lavanda
           </h2>
-          <p className="text-lg text-muted-foreground leading-relaxed">
+          <p id="outras-fragrancias" className="text-lg text-muted-foreground leading-relaxed">
             Fragrâncias artesanais com identidade visual natural e tons lavanda
             suaves. Cada perfume é criado com ingredientes selecionados e muito
             cuidado.
