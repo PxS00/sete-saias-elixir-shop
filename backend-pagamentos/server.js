@@ -276,9 +276,15 @@ app.get("/dashboard", (req, res) => {
         }
         .order-details { 
             display: grid; 
-            grid-template-columns: 1fr 1fr; 
+            grid-template-columns: 1fr 1fr 1fr; 
             gap: 10px; 
             font-size: 0.9rem; 
+        }
+        @media (max-width: 768px) {
+            .order-details {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
         }
         .refresh-btn { 
             background: #b10000; 
@@ -392,12 +398,15 @@ app.get("/dashboard", (req, res) => {
                     <div class="order-details">
                         <div><strong>Cliente:</strong> \${order.customer?.name || 'N/A'}</div>
                         <div><strong>Email:</strong> \${order.customer?.email || 'N/A'}</div>
+                        <div><strong>Endereço:</strong> \${order.customer?.address?.street || 'N/A'}</div>
+                        <div><strong>Complemento:</strong> \${order.customer?.address?.complement || 'N/A'}</div>
+                        <div><strong>Cidade:</strong> \${order.customer?.address?.city || 'N/A'}</div>
+                        <div><strong>CEP:</strong> \${order.customer?.address?.zip_code || 'N/A'}</div>
                         <div><strong>Produto:</strong> \${order.product?.title || 'N/A'}</div>
                         <div><strong>Variação:</strong> \${order.product?.variation || 'N/A'}</div>
                         <div><strong>Valor:</strong> R$ \${(order.product?.unit_price || 0).toFixed(2).replace('.', ',')}</div>
                         <div><strong>Pagamento:</strong> \${order.payment_method === 'pix' ? 'PIX' : 'Cartão'}</div>
                         <div><strong>Data:</strong> \${date}</div>
-                        <div><strong>Cidade:</strong> \${order.customer?.address?.city || 'N/A'}</div>
                     </div>
                 </div>
             \`;
@@ -444,7 +453,7 @@ app.get("/api/export-csv", (req, res) => {
   ];
 
   const csvHeader =
-    "ID,Cliente,Email,Cidade,Produto,Variacao,Valor,Pagamento,Status,Data\n";
+    "ID,Cliente,Email,Endereco,Complemento,Cidade,CEP,Produto,Variacao,Valor,Pagamento,Status,Data\n";
   const csvData = allOrders
     .map((order) => {
       const date = new Date(
@@ -454,7 +463,10 @@ app.get("/api/export-csv", (req, res) => {
         order.id,
         order.customer?.name || "",
         order.customer?.email || "",
+        order.customer?.address?.street || "",
+        order.customer?.address?.complement || "",
         order.customer?.address?.city || "",
+        order.customer?.address?.zip_code || "",
         order.product?.title || "",
         order.product?.variation || "",
         (order.product?.unit_price || 0).toFixed(2).replace(".", ","),

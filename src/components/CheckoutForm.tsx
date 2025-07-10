@@ -26,6 +26,7 @@ export const CheckoutForm = ({
     nomeCompleto: "",
     email: "",
     endereco: "",
+    complemento: "",
     cidade: "",
     cep: "",
     opcaoPagamento: "pix",
@@ -42,6 +43,7 @@ export const CheckoutForm = ({
           email: formData.email,
           address: {
             street: formData.endereco,
+            complement: formData.complemento,
             city: formData.cidade,
             zip_code: formData.cep,
           },
@@ -179,6 +181,26 @@ export const CheckoutForm = ({
                 onChange={(e) => handleInputChange("endereco", e.target.value)}
                 required
                 disabled={isLoading}
+                className="mt-1 border-sete-gold/30 focus:border-sete-gold bg-sete-dark/50 text-sete-cream"
+              />
+            </div>
+
+            <div>
+              <Label
+                htmlFor="complemento"
+                className="text-sete-cream font-medium font-body"
+              >
+                Complemento (opcional)
+              </Label>
+              <Input
+                id="complemento"
+                type="text"
+                value={formData.complemento}
+                onChange={(e) =>
+                  handleInputChange("complemento", e.target.value)
+                }
+                disabled={isLoading}
+                placeholder="Apartamento, casa, bloco, etc."
                 className="mt-1 border-sete-gold/30 focus:border-sete-gold bg-sete-dark/50 text-sete-cream"
               />
             </div>

@@ -19,7 +19,7 @@ http://localhost:3001/dashboard
 ### 3. Informações Exibidas:
 
 - Nome e email do cliente
-- Endereço (cidade)
+- Endereço completo (rua, complemento, cidade, CEP)
 - Produto e variação (Feminino/Masculino)
 - Valor do pedido
 - Método de pagamento (PIX/Cartão)
@@ -57,7 +57,10 @@ GET http://localhost:3001/api/export-csv
 - **ID**: Identificador único do pedido
 - **Cliente**: Nome completo
 - **Email**: Email do cliente
+- **Endereco**: Rua/Avenida completa
+- **Complemento**: Apartamento, casa, bloco, etc.
 - **Cidade**: Cidade de entrega
+- **CEP**: Código postal
 - **Produto**: Nome do produto
 - **Variacao**: Feminino ou Masculino
 - **Valor**: Valor em R$
