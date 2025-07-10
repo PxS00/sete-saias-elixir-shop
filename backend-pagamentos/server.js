@@ -9,6 +9,7 @@ const completedOrders = new Map();
 
 const client = new MercadoPagoConfig({
   accessToken:
+    process.env.MERCADOPAGO_ACCESS_TOKEN ||
     "APP_USR-4374509141180080-070918-bee7ca8241a0bf5388cac5a37f0ccebe-1464890816",
   options: {
     timeout: 5000,
@@ -16,7 +17,19 @@ const client = new MercadoPagoConfig({
   },
 });
 
-app.use(cors());
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "https://sete-saias.vercel.app",
+  "https://seteseias.com.br",
+  "http://localhost:5173",
+  "http://localhost:3000",
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+  })
+);
 app.use(express.json());
 
 function saveConfirmedOrder(orderData) {
