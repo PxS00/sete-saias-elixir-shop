@@ -1,12 +1,13 @@
 // Servidor de pagamentos com Mercado Pago
 const express = require("express");
 const cors = require("cors");
-const { MercadoPagoConfig, Preference } = require("mercadopago");
+const { MercadoPagoConfig, Preference, Payment } = require("mercadopago");
 
 const app = express();
 
 // Armazenamento temporário dos pedidos (em produção, usar banco de dados)
 const pendingOrders = new Map();
+const completedOrders = new Map(); // Novo: para pedidos finalizados
 
 // Configuração do Mercado Pago
 const client = new MercadoPagoConfig({
@@ -21,7 +22,7 @@ const client = new MercadoPagoConfig({
 app.use(cors());
 app.use(express.json());
 
-// Função para salvar pedido confirmado (implementar conforme sua necessidade)
+// Função para salvar pedido confirmado
 function saveConfirmedOrder(orderData) {
   console.log("SALVANDO PEDIDO CONFIRMADO:");
   console.log("Cliente:", orderData.customer);
@@ -29,11 +30,13 @@ function saveConfirmedOrder(orderData) {
   console.log("Forma de pagamento:", orderData.payment_method);
   console.log("Data:", new Date().toISOString());
 
-  // Aqui você pode:
-  // - Salvar no banco de dados
-  // - Enviar email de confirmação
-  // - Atualizar estoque
-  // - Etc.
+  // Salvar no Map de pedidos completos com timestamp
+  const orderId = `COMPLETED-${Date.now()}`;
+  completedOrders.set(orderId, {
+    ...orderData,
+    completed_at: new Date().toISOString(),
+    status: "paid",
+  });
 }
 
 // Endpoint para criar pagamento
@@ -118,33 +121,38 @@ app.post("/api/create-payment", async (req, res) => {
 
 // Webhook para receber notificações do Mercado Pago
 app.post("/api/webhook", (req, res) => {
+  console.log("Webhook recebido:", req.body);
+
   const { type, data } = req.body;
 
-  console.log("Webhook recebido:", { type, data });
+  if (type === "payment" && data && data.id) {
+    // Buscar informações do pagamento
+    const payment = new Payment(client);
+    payment
+      .get({ id: data.id })
+      .then((paymentData) => {
+        console.log("Dados do pagamento:", paymentData);
 
-  if (type === "payment") {
-    console.log("Pagamento confirmado:", data.id);
+        if (paymentData.status === "approved") {
+          // Buscar dados do pedido usando external_reference
+          const externalReference = paymentData.external_reference;
 
-    // Aqui você buscaria os detalhes do pagamento para pegar o external_reference
-    // Por simplicidade, vou simular que temos o external_reference
-    const orderId = `PERFUME-${data.id}`; // Isso viria do pagamento real
+          if (externalReference && pendingOrders.has(externalReference)) {
+            const orderData = pendingOrders.get(externalReference);
 
-    // Buscar dados do pedido temporário
-    const orderData = pendingOrders.get(orderId);
+            // Salvar pedido como confirmado
+            saveConfirmedOrder(orderData);
 
-    if (orderData) {
-      console.log("Processando pedido confirmado:", orderId);
+            // Remover da lista de pendentes
+            pendingOrders.delete(externalReference);
 
-      // Salvar pedido confirmado
-      saveConfirmedOrder(orderData);
-
-      // Remover dos pedidos temporários
-      pendingOrders.delete(orderId);
-
-      console.log("Pedido processado com sucesso!");
-    } else {
-      console.log("Pedido não encontrado:", orderId);
-    }
+            console.log(`Pedido ${externalReference} confirmado e salvo!`);
+          }
+        }
+      })
+      .catch((error) => {
+        console.error("Erro ao processar webhook:", error);
+      });
   }
 
   res.status(200).send("OK");
@@ -161,6 +169,310 @@ app.get("/api/pending-orders", (req, res) => {
     count: orders.length,
     orders,
   });
+});
+
+// Endpoint para listar pedidos completos (para debug)
+app.get("/api/completed-orders", (req, res) => {
+  const orders = Array.from(completedOrders.entries()).map(([id, data]) => ({
+    id,
+    ...data,
+  }));
+
+  res.json({
+    count: orders.length,
+    orders,
+  });
+});
+
+// Dashboard HTML para visualizar pedidos
+app.get("/dashboard", (req, res) => {
+  const html = `
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Pedidos Sete Saias</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0e0e0e; 
+            color: #f3e8d3; 
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { 
+            color: #e0a326; 
+            margin-bottom: 30px; 
+            text-align: center;
+            font-size: 2.5rem;
+        }
+        .stats { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 20px; 
+            margin-bottom: 30px; 
+        }
+        .stat-card { 
+            background: #1a1a1a; 
+            border: 1px solid #e0a326; 
+            border-radius: 10px; 
+            padding: 20px; 
+            text-align: center; 
+        }
+        .stat-number { 
+            font-size: 2rem; 
+            color: #e0a326; 
+            font-weight: bold; 
+        }
+        .stat-label { 
+            color: #f3e8d3; 
+            margin-top: 5px; 
+        }
+        .section { 
+            background: #1a1a1a; 
+            border: 1px solid #e0a326; 
+            border-radius: 10px; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+        }
+        .section h2 { 
+            color: #e0a326; 
+            margin-bottom: 15px; 
+            border-bottom: 1px solid #e0a326; 
+            padding-bottom: 10px; 
+        }
+        .order-card { 
+            background: #2a2a2a; 
+            border-radius: 8px; 
+            padding: 15px; 
+            margin-bottom: 15px; 
+            border-left: 4px solid #e0a326; 
+        }
+        .order-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 10px; 
+        }
+        .order-id { 
+            font-weight: bold; 
+            color: #e0a326; 
+        }
+        .order-status { 
+            padding: 4px 12px; 
+            border-radius: 20px; 
+            font-size: 0.8rem; 
+            font-weight: bold; 
+        }
+        .status-pending { 
+            background: #b10000; 
+            color: #f3e8d3; 
+        }
+        .status-paid { 
+            background: #28a745; 
+            color: white; 
+        }
+        .order-details { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px; 
+            font-size: 0.9rem; 
+        }
+        .refresh-btn { 
+            background: #b10000; 
+            color: #f3e8d3; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 1rem; 
+            margin-bottom: 20px; 
+        }
+        .refresh-btn:hover { 
+            background: #900000; 
+        }
+        .export-btn { 
+            background: #e0a326; 
+            color: #0e0e0e; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 1rem; 
+            margin-left: 10px; 
+        }
+        .export-btn:hover { 
+            background: #c4891f; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard - Pedidos Sete Saias</h1>
+        
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="pending-count">0</div>
+                <div class="stat-label">Pedidos Pendentes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completed-count">0</div>
+                <div class="stat-label">Pedidos Completos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="total-revenue">R$ 0,00</div>
+                <div class="stat-label">Receita Total</div>
+            </div>
+        </div>
+
+        <button class="refresh-btn" onclick="loadData()">Atualizar Dados</button>
+        <button class="export-btn" onclick="exportData()">Exportar CSV</button>
+
+        <div class="section">
+            <h2>Pedidos Completos</h2>
+            <div id="completed-orders"></div>
+        </div>
+
+        <div class="section">
+            <h2>Pedidos Pendentes</h2>
+            <div id="pending-orders"></div>
+        </div>
+    </div>
+
+    <script>
+        async function loadData() {
+            try {
+                // Carregar pedidos pendentes
+                const pendingResponse = await fetch('/api/pending-orders');
+                const pendingData = await pendingResponse.json();
+                
+                // Carregar pedidos completos
+                const completedResponse = await fetch('/api/completed-orders');
+                const completedData = await completedResponse.json();
+
+                // Atualizar estatísticas
+                document.getElementById('pending-count').textContent = pendingData.count;
+                document.getElementById('completed-count').textContent = completedData.count;
+                
+                const totalRevenue = completedData.orders.reduce((sum, order) => {
+                    return sum + (order.product?.unit_price || 0);
+                }, 0);
+                document.getElementById('total-revenue').textContent = 
+                    'R$ ' + totalRevenue.toFixed(2).replace('.', ',');
+
+                // Renderizar pedidos completos
+                const completedContainer = document.getElementById('completed-orders');
+                completedContainer.innerHTML = completedData.orders.length ? 
+                    completedData.orders.map(order => renderOrder(order, 'paid')).join('') :
+                    '<p>Nenhum pedido completo encontrado.</p>';
+
+                // Renderizar pedidos pendentes
+                const pendingContainer = document.getElementById('pending-orders');
+                pendingContainer.innerHTML = pendingData.orders.length ? 
+                    pendingData.orders.map(order => renderOrder(order, 'pending')).join('') :
+                    '<p>Nenhum pedido pendente encontrado.</p>';
+
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+            }
+        }
+
+        function renderOrder(order, status) {
+            const date = new Date(order.created_at || order.completed_at).toLocaleString('pt-BR');
+            return \`
+                <div class="order-card">
+                    <div class="order-header">
+                        <span class="order-id">\${order.id}</span>
+                        <span class="order-status status-\${status}">
+                            \${status === 'paid' ? 'Pago' : 'Pendente'}
+                        </span>
+                    </div>
+                    <div class="order-details">
+                        <div><strong>Cliente:</strong> \${order.customer?.name || 'N/A'}</div>
+                        <div><strong>Email:</strong> \${order.customer?.email || 'N/A'}</div>
+                        <div><strong>Produto:</strong> \${order.product?.title || 'N/A'}</div>
+                        <div><strong>Variação:</strong> \${order.product?.variation || 'N/A'}</div>
+                        <div><strong>Valor:</strong> R$ \${(order.product?.unit_price || 0).toFixed(2).replace('.', ',')}</div>
+                        <div><strong>Pagamento:</strong> \${order.payment_method === 'pix' ? 'PIX' : 'Cartão'}</div>
+                        <div><strong>Data:</strong> \${date}</div>
+                        <div><strong>Cidade:</strong> \${order.customer?.address?.city || 'N/A'}</div>
+                    </div>
+                </div>
+            \`;
+        }
+
+        function exportData() {
+            fetch('/api/export-csv')
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'pedidos-sete-saias.csv';
+                    a.click();
+                });
+        }
+
+        // Carregar dados ao abrir a página
+        loadData();
+        
+        // Atualizar automaticamente a cada 30 segundos
+        setInterval(loadData, 30000);
+    </script>
+</body>
+</html>
+  `;
+
+  res.send(html);
+});
+
+// Endpoint para exportar dados em CSV
+app.get("/api/export-csv", (req, res) => {
+  const allOrders = [
+    ...Array.from(pendingOrders.entries()).map(([id, data]) => ({
+      id,
+      ...data,
+      status: "pending",
+    })),
+    ...Array.from(completedOrders.entries()).map(([id, data]) => ({
+      id,
+      ...data,
+      status: "paid",
+    })),
+  ];
+
+  const csvHeader =
+    "ID,Cliente,Email,Cidade,Produto,Variacao,Valor,Pagamento,Status,Data\n";
+  const csvData = allOrders
+    .map((order) => {
+      const date = new Date(
+        order.created_at || order.completed_at
+      ).toLocaleDateString("pt-BR");
+      return [
+        order.id,
+        order.customer?.name || "",
+        order.customer?.email || "",
+        order.customer?.address?.city || "",
+        order.product?.title || "",
+        order.product?.variation || "",
+        (order.product?.unit_price || 0).toFixed(2).replace(".", ","),
+        order.payment_method === "pix" ? "PIX" : "Cartão",
+        order.status === "paid" ? "Pago" : "Pendente",
+        date,
+      ]
+        .map((field) => `"${field}"`)
+        .join(",");
+    })
+    .join("\n");
+
+  res.setHeader("Content-Type", "text/csv; charset=utf-8");
+  res.setHeader(
+    "Content-Disposition",
+    'attachment; filename="pedidos-sete-saias.csv"'
+  );
+  res.send(csvHeader + csvData);
 });
 
 // Rota de teste
