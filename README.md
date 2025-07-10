@@ -1,137 +1,31 @@
-# Sete Saias - E-commerce de Perfumes
+# Sete Saias
 
-Loja online para perfumes artesanais com sistema de pagamento integrado.
+E-commerce de perfumes artesanais com sistema de pagamento integrado.
 
-## Tecnologias
+## Sobre o Projeto
 
-- **Frontend**: React + TypeScript + Vite
-- **Backend**: Node.js + Express
-- **Pagamentos**: Mercado Pago API
-- **Styling**: Tailwind CSS
-- **UI**: Shadcn/ui components
+Loja online especializada em perfumes artesanais, oferecendo:
 
-## Estrutura do Projeto
-
-```
-src/
-├── components/          # Componentes React
-├── pages/              # Páginas da aplicação
-├── lib/                # Utilitários
-└── assets/             # Imagens e recursos
-
-backend-pagamentos/
-├── server.js           # Servidor de pagamentos
-├── package.json        # Dependências do backend
-└── node_modules/       # Módulos do Node.js
-```
-
-## Instalação
-
-### Frontend
-
-```bash
-npm install
-npm run dev
-```
-
-### Backend
-
-```bash
-cd backend-pagamentos
-npm install
-node server.js
-```
-
-## Configuração
-
-### Variáveis de Ambiente
-
-Crie um arquivo `.env` no diretório backend:
-
-```env
-MERCADOPAGO_ACCESS_TOKEN=seu_token_aqui
-PORT=3001
-```
-
-### Produto
-
-- Nome: Perfume Sete Saias
-- Preço: R$ 237,00
-- Variações: Feminino, Masculino
+- **Produto**: Perfume Sete Saias (R$ 237,00)
+- **Variações**: Feminino (floral e delicada) e Masculino (amadeirada e marcante)
+- **Pagamentos**: PIX e Cartão de Crédito via Mercado Pago
+- **Entrega**: Coleta completa de endereço para envio
 
 ## Funcionalidades
 
-### Frontend
+- Catálogo de produtos com seleção de variações
+- Checkout seguro com múltiplas formas de pagamento
+- Dashboard administrativo para gestão de pedidos
+- Exportação de dados de vendas
+- Interface responsiva e moderna
 
-- Catálogo de produtos
-- Formulário de checkout
-- Seleção de variações
-- Integração com pagamento
+## Tecnologias
 
-### Backend
+- **Frontend**: React + TypeScript + Tailwind CSS
+- **Backend**: Node.js + Express
+- **Pagamentos**: API Mercado Pago
+- **UI**: Componentes Shadcn/ui
 
-- API de pagamentos
-- Dashboard de pedidos
-- Webhook para confirmações
-- Exportação de dados (CSV)
+---
 
-## APIs
-
-### Criar Pagamento
-
-```
-POST /api/create-payment
-```
-
-### Listar Pedidos
-
-```
-GET /api/pending-orders
-GET /api/completed-orders
-```
-
-### Dashboard
-
-```
-GET /dashboard
-```
-
-### Exportar CSV
-
-```
-GET /api/export-csv
-```
-
-## Deploy
-
-### Produção
-
-- Frontend: Vercel, Netlify
-- Backend: Railway, Heroku
-- Banco: PostgreSQL, MongoDB
-
-### Desenvolvimento
-
-- Frontend: `http://localhost:5173`
-- Backend: `http://localhost:3001`
-- Dashboard: `http://localhost:3001/dashboard`
-
-## Dados do Formulário
-
-O sistema coleta:
-
-- Nome e email do cliente
-- Endereço completo (rua, complemento, cidade, CEP)
-- Variação do produto
-- Método de pagamento (PIX/Cartão)
-
-## Segurança
-
-- Validação de dados no backend
-- Tokens de API protegidos
-- HTTPS obrigatório em produção
-- Webhook com validação
-
-## Licença
-
-Projeto proprietário - Sete Saias
+© 2025 Sete Saias. Todos os direitos reservados.

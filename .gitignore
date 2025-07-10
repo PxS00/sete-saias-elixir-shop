@@ -100,3 +100,7 @@ pedidos-*.csv
 .vscode/settings.json
 .vscode/launch.json
 .vscode/tasks.json
+
+# Documentation files (private)
+*.md
+!README.md
