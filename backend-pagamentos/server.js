@@ -1,15 +1,12 @@
-// Servidor de pagamentos com Mercado Pago
 const express = require("express");
 const cors = require("cors");
 const { MercadoPagoConfig, Preference, Payment } = require("mercadopago");
 
 const app = express();
 
-// Armazenamento temporário dos pedidos (em produção, usar banco de dados)
 const pendingOrders = new Map();
-const completedOrders = new Map(); // Novo: para pedidos finalizados
+const completedOrders = new Map();
 
-// Configuração do Mercado Pago
 const client = new MercadoPagoConfig({
   accessToken:
     "APP_USR-4374509141180080-070918-bee7ca8241a0bf5388cac5a37f0ccebe-1464890816",
@@ -22,15 +19,7 @@ const client = new MercadoPagoConfig({
 app.use(cors());
 app.use(express.json());
 
-// Função para salvar pedido confirmado
 function saveConfirmedOrder(orderData) {
-  console.log("SALVANDO PEDIDO CONFIRMADO:");
-  console.log("Cliente:", orderData.customer);
-  console.log("Produto:", orderData.product);
-  console.log("Forma de pagamento:", orderData.payment_method);
-  console.log("Data:", new Date().toISOString());
-
-  // Salvar no Map de pedidos completos com timestamp
   const orderId = `COMPLETED-${Date.now()}`;
   completedOrders.set(orderId, {
     ...orderData,
@@ -39,17 +28,12 @@ function saveConfirmedOrder(orderData) {
   });
 }
 
-// Endpoint para criar pagamento
 app.post("/api/create-payment", async (req, res) => {
   try {
     const { customer, product, payment_method } = req.body;
 
-    console.log("Dados recebidos:", req.body);
-
-    // Gerar ID único para o pedido
     const orderId = `PERFUME-${Date.now()}`;
 
-    // Salvar dados temporariamente (só será processado se pagamento for confirmado)
     pendingOrders.set(orderId, {
       customer,
       product,
@@ -57,9 +41,6 @@ app.post("/api/create-payment", async (req, res) => {
       created_at: new Date().toISOString(),
     });
 
-    console.log(`Pedido temporário salvo: ${orderId}`);
-
-    // Configuração da preferência de pagamento
     const preference = new Preference(client);
 
     const preferenceData = {
@@ -99,10 +80,7 @@ app.post("/api/create-payment", async (req, res) => {
       external_reference: orderId,
     };
 
-    // Criar preferência
     const result = await preference.create({ body: preferenceData });
-
-    console.log("Preferência criada:", result.id);
 
     res.json({
       success: true,
@@ -111,7 +89,6 @@ app.post("/api/create-payment", async (req, res) => {
       order_id: orderId,
     });
   } catch (error) {
-    console.error("Erro ao criar pagamento:", error);
     res.status(500).json({
       success: false,
       error: "Erro interno do servidor",
@@ -119,34 +96,23 @@ app.post("/api/create-payment", async (req, res) => {
   }
 });
 
-// Webhook para receber notificações do Mercado Pago
 app.post("/api/webhook", (req, res) => {
-  console.log("Webhook recebido:", req.body);
-
   const { type, data } = req.body;
 
   if (type === "payment" && data && data.id) {
-    // Buscar informações do pagamento
     const payment = new Payment(client);
     payment
       .get({ id: data.id })
       .then((paymentData) => {
-        console.log("Dados do pagamento:", paymentData);
-
         if (paymentData.status === "approved") {
-          // Buscar dados do pedido usando external_reference
           const externalReference = paymentData.external_reference;
 
           if (externalReference && pendingOrders.has(externalReference)) {
             const orderData = pendingOrders.get(externalReference);
 
-            // Salvar pedido como confirmado
             saveConfirmedOrder(orderData);
 
-            // Remover da lista de pendentes
             pendingOrders.delete(externalReference);
-
-            console.log(`Pedido ${externalReference} confirmado e salvo!`);
           }
         }
       })
@@ -158,7 +124,6 @@ app.post("/api/webhook", (req, res) => {
   res.status(200).send("OK");
 });
 
-// Endpoint para listar pedidos pendentes (para debug)
 app.get("/api/pending-orders", (req, res) => {
   const orders = Array.from(pendingOrders.entries()).map(([id, data]) => ({
     id,
@@ -171,7 +136,6 @@ app.get("/api/pending-orders", (req, res) => {
   });
 });
 
-// Endpoint para listar pedidos completos (para debug)
 app.get("/api/completed-orders", (req, res) => {
   const orders = Array.from(completedOrders.entries()).map(([id, data]) => ({
     id,
@@ -184,7 +148,6 @@ app.get("/api/completed-orders", (req, res) => {
   });
 });
 
-// Dashboard HTML para visualizar pedidos
 app.get("/dashboard", (req, res) => {
   const html = `
 <!DOCTYPE html>
@@ -437,7 +400,6 @@ app.get("/dashboard", (req, res) => {
   res.send(html);
 });
 
-// Endpoint para exportar dados em CSV
 app.get("/api/export-csv", (req, res) => {
   const allOrders = [
     ...Array.from(pendingOrders.entries()).map(([id, data]) => ({
@@ -487,10 +449,9 @@ app.get("/api/export-csv", (req, res) => {
   res.send(csvHeader + csvData);
 });
 
-// Rota de teste
 app.get("/", (req, res) => {
   res.json({
-    message: "Servidor de pagamentos funcionando!",
+    message: "Servidor funcionando",
     timestamp: new Date().toISOString(),
     pending_orders: pendingOrders.size,
   });
@@ -499,7 +460,4 @@ app.get("/", (req, res) => {
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
-  console.log(`API disponível em: http://localhost:${PORT}/api/create-payment`);
-  console.log(`Teste em: http://localhost:${PORT}`);
-  console.log(`Pedidos pendentes: http://localhost:${PORT}/api/pending-orders`);
 });
