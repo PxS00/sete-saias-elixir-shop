@@ -2,65 +2,24 @@
 
 ## Implementação Realizada
 
-- Frontend atualizado para integração real com APIs de pagamento
+- Frontend com integração para APIs de pagamento
 - Formulário com validação e estados de loading
-- Exemplos de backend para Mercado Pago e Stripe
-- Tratamento de erros e redirecionamento automático
+- Backend para Mercado Pago
+- Tratamento de erros e redirecionamento
 
----
+## Configuração do Backend
 
-## Como Implementar
+### Mercado Pago
 
-### 1. Escolha da Plataforma de Pagamento
-
-#### Mercado Pago (Recomendado para Brasil)
-
-- PIX nativo
-- Cartão de crédito/débito
-- Boleto bancário
-- Interface em português
-- Tarifas competitivas
-
-#### Stripe (Internacional)
-
-- Cartões internacionais
-- Apple Pay, Google Pay
-- Documentação excelente
-- PIX mais complexo
-
----
-
-### 2. Configuração do Backend
-
-#### Opção 1: Mercado Pago
-
-1. Crie uma conta em https://mercadopago.com.br
-2. Obtenha suas credenciais no painel do desenvolvedor
-3. Instale as dependências:
+1. Criar conta em https://mercadopago.com.br
+2. Obter credenciais no painel do desenvolvedor
+3. Instalar dependências:
    ```bash
    npm install express cors mercadopago
    ```
-4. Use o arquivo `api-example.js` como base
-5. Substitua `SEU_ACCESS_TOKEN_AQUI` pelo seu token real
+4. Configurar token de acesso no servidor
 
-#### Opção 2: Stripe
-
-1. Crie uma conta em https://stripe.com
-2. Obtenha suas chaves no dashboard
-3. Instale as dependências:
-   ```bash
-   npm install express cors stripe
-   ```
-4. Use o arquivo `stripe-example.js` como base
-5. Substitua as chaves pelos valores reais
-
----
-
-### 3. Configuração do Frontend
-
-O frontend já está configurado e enviará dados para `/api/create-payment`.
-
-Estrutura de dados enviada:
+### Estrutura de Dados
 
 ```json
 {
@@ -74,7 +33,7 @@ Estrutura de dados enviada:
     }
   },
   "product": {
-    "title": "Perfume Sete Saias - Feminino/Masculino",
+    "title": "Perfume Sete Saias",
     "unit_price": 237.0,
     "quantity": 1
   },
@@ -82,86 +41,37 @@ Estrutura de dados enviada:
 }
 ```
 
----
+## Fluxo de Pagamento
 
-### 4. Fluxo de Pagamento
-
-1. Cliente preenche o formulário
-2. Frontend envia dados para sua API
+1. Cliente preenche formulário
+2. Frontend envia dados para API
 3. Backend cria preferência de pagamento
-4. Cliente é redirecionado para página de pagamento
-5. Após pagamento, cliente retorna ao seu site
-6. Webhook confirma o pagamento automaticamente
+4. Cliente é redirecionado para pagamento
+5. Webhook confirma pagamento
 
----
-
-### 5. URLs de Retorno
-
-Configure estas páginas no seu site:
-
-- Sucesso: `/sucesso` - Pagamento aprovado
-- Falha: `/falha` - Pagamento recusado
-- Pendente: `/pendente` - Aguardando confirmação
-
----
-
-### 6. Variáveis de Ambiente
-
-Crie um arquivo `.env`:
+## Variáveis de Ambiente
 
 ```env
-# Mercado Pago
 MERCADOPAGO_ACCESS_TOKEN=SEU_TOKEN_AQUI
-
-# Stripe
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-
-# URLs
 FRONTEND_URL=https://seusite.com
 ```
 
----
+## Deploy
 
-### 7. Deploy e Produção
+- Frontend: Vercel/Netlify
+- Backend: Railway/Heroku
+- Banco: MongoDB/PostgreSQL
+- HTTPS obrigatório
 
-#### Recomendações:
+## Testes
 
-- Vercel/Netlify para o frontend
-- Railway/Heroku para o backend
-- MongoDB/PostgreSQL para salvar pedidos
-- Configurar HTTPS obrigatório para pagamentos
-
-#### Segurança:
-
-- Validar dados no backend
-- Usar HTTPS em produção
-- Configurar webhooks corretamente
-- Logs de transações
-
----
-
-### 8. Testes
-
-#### Mercado Pago:
-
-- Use as credenciais de teste
+- Usar credenciais de teste do Mercado Pago
 - Cartões de teste disponíveis na documentação
 
-#### Stripe:
+## Configuração
 
-- Use `pk_test_` e `sk_test_`
-- Cartão de teste: `4242 4242 4242 4242`
-
----
-
-## Próximos Passos
-
-1. Escolher Mercado Pago ou Stripe
-2. Configurar conta e obter credenciais
-3. Implementar o backend usando os exemplos
-4. Testar com credenciais de sandbox
-5. Deploy em produção
-6. Configurar webhooks para confirmação automática
-
-Comece com Mercado Pago se seu foco é o Brasil - é mais simples e tem PIX nativo.
+1. Obter credenciais do Mercado Pago
+2. Configurar servidor backend
+3. Testar com credenciais sandbox
+4. Deploy em produção
+5. Configurar webhooks

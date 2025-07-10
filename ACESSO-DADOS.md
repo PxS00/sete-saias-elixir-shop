@@ -1,36 +1,33 @@
-# 📊 Acesso aos Dados do Formulário - Sete Saias
+# Acesso aos Dados do Formulário
 
-## 🚀 Dashboard Web (RECOMENDADO)
+## Dashboard Web
 
-### 1. Acesse o Dashboard
+### Acesso:
 
 ```
 http://localhost:3001/dashboard
 ```
 
-### 2. Funcionalidades do Dashboard:
+### Funcionalidades:
 
-- **Visualização em tempo real** dos pedidos pendentes e completos
-- **Estatísticas** de vendas e receita total
-- **Exportação CSV** para análises externas
-- **Atualização automática** a cada 30 segundos
-- **Design responsivo** com cores da marca
+- Visualização de pedidos pendentes e completos
+- Estatísticas de vendas e receita
+- Exportação CSV
+- Atualização automática (30 segundos)
 
-### 3. Informações Exibidas:
+### Informações Exibidas:
 
 - Nome e email do cliente
 - Endereço completo (rua, complemento, cidade, CEP)
-- Produto e variação (Feminino/Masculino)
+- Produto e variação
 - Valor do pedido
-- Método de pagamento (PIX/Cartão)
+- Método de pagamento
 - Status do pagamento
 - Data e hora do pedido
 
----
+## API Endpoints
 
-## 🔧 API Endpoints
-
-### Pedidos Completos (Pagos):
+### Pedidos Completos:
 
 ```
 GET http://localhost:3001/api/completed-orders
@@ -48,104 +45,61 @@ GET http://localhost:3001/api/pending-orders
 GET http://localhost:3001/api/export-csv
 ```
 
----
+## Arquivo CSV
 
-## 📁 Arquivo CSV
+### Colunas:
 
-### Colunas do Export:
-
-- **ID**: Identificador único do pedido
-- **Cliente**: Nome completo
-- **Email**: Email do cliente
-- **Endereco**: Rua/Avenida completa
-- **Complemento**: Apartamento, casa, bloco, etc.
-- **Cidade**: Cidade de entrega
-- **CEP**: Código postal
-- **Produto**: Nome do produto
-- **Variacao**: Feminino ou Masculino
-- **Valor**: Valor em R$
-- **Pagamento**: PIX ou Cartão
-- **Status**: Pendente ou Pago
-- **Data**: Data do pedido
+- ID: Identificador único
+- Cliente: Nome completo
+- Email: Email do cliente
+- Endereco: Endereço completo
+- Complemento: Complemento do endereço
+- Cidade: Cidade de entrega
+- CEP: Código postal
+- Produto: Nome do produto
+- Variacao: Feminino ou Masculino
+- Valor: Valor em R$
+- Pagamento: PIX ou Cartão
+- Status: Pendente ou Pago
+- Data: Data do pedido
 
 ### Como Usar:
 
 1. Acesse o dashboard
 2. Clique em "Exportar CSV"
-3. O arquivo será baixado automaticamente
+3. Arquivo será baixado automaticamente
 4. Abra no Excel ou Google Sheets
 
----
+## Configuração para Produção
 
-## 🛠 Próximos Passos (Opcional)
+### Banco de Dados:
 
-### Para Projetos Maiores:
+- SQLite para projetos pequenos
+- PostgreSQL para produção
+- MySQL para compatibilidade
 
-1. **Banco de Dados**:
+### Segurança:
 
-   - SQLite para simplicidade
-   - PostgreSQL para produção
-   - MySQL para compatibilidade
+- Adicionar autenticação no dashboard
+- Usar HTTPS em produção
+- Backup regular dos dados
+- Monitoramento de logs
 
-2. **Autenticação**:
+## Inicialização
 
-   - Login para acessar dashboard
-   - Diferentes níveis de permissão
+### Servidor:
 
-3. **Notificações**:
+```bash
+cd backend-pagamentos
+node server.js
+```
 
-   - Email automático para novos pedidos
-   - WhatsApp Business API
-   - Telegram Bot
+### Dashboard:
 
-4. **Análises Avançadas**:
-   - Gráficos de vendas
-   - Relatórios mensais
-   - Análise de conversão
+```
+http://localhost:3001/dashboard
+```
 
----
+### Teste:
 
-## 🔐 Segurança
-
-### Importante:
-
-- Dashboard não tem autenticação (adicionar se necessário)
-- Dados ficam em memória (reiniciar servidor = perder dados)
-- Para produção, use banco de dados real
-- Webhook do Mercado Pago já tem validação
-
-### Recomendações:
-
-1. Adicione autenticação básica
-2. Use HTTPS em produção
-3. Faça backup dos dados regularmente
-4. Monitore logs do servidor
-
----
-
-## 🚀 Como Iniciar
-
-1. **Inicie o servidor**:
-
-   ```bash
-   cd backend-pagamentos
-   node server.js
-   ```
-
-2. **Acesse o dashboard**:
-
-   ```
-   http://localhost:3001/dashboard
-   ```
-
-3. **Faça um pedido teste** para ver os dados aparecerem
-
----
-
-## 📞 Suporte
-
-Se precisar de mais funcionalidades ou tiver problemas:
-
-- Verifique se o servidor está rodando
-- Confira os logs no terminal
-- Teste os endpoints diretamente no navegador
+Faça um pedido em `http://localhost:5173` para ver os dados aparecerem.
